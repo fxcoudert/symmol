@@ -2458,7 +2458,7 @@ c     write(OUT,*)'NMS,MV',NMS,MV
       com=-com
       call azzera(AA,0.d0,9)
       go to 1355
-di ognuna di queste quattro  matrici fare l'equivalente con -z!!!!!
+C  di ognuna di queste quattro  matrici fare l'equivalente con -z!!!!!
  1360 continue
  1370 continue
       go to 2500

@@ -1,0 +1,7 @@
+Version october 22th 2002. 
+
+Dr. Tomoji Ozeki, Department of Chemistry and Material Science, Tokyo Institute
+of Technology, noticed that the old version of SYMMOL, when treats a group with
+degenerated inertia moment, does not minimize the RMS. The new version does.
+The difference, in terms of RMS, is in the range 0.5*RMSold < RMSmin < RMSold;
+in terms of symmetrized coordinates the difference is very small.

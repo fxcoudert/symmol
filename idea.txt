@@ -1,0 +1,21 @@
+SYMMOL was created to find the maximum symmetry group in a group of atoms, having a certain tolerance. The code has been thought to quantify the deviations from the maximum molecular symmetry found in the crystalline state, due, besides experimental errors, to small distortions induced by the crystalline field; in these cases we can think of small tolerances, equal to a few s.u.'s. This has allowed to build SYMMOL based exclusively on geometric considerations (with at most a control on the atomic species).
+
+The mechanism used assumes that for each atom of coordinates x_i transformed through the G_k group operation there is an atom x_j such that:
+          | x_j – G_k x_i | < t    (Eq. 1)
+where t is the tolerance. SYMMOL fails when equation (1) is true but not unambiguously, i.e., there is more than one x_j atom that satisfies it. In general SYMMOL works up to values of t = 0.5 to 0.7 Å.
+
+It has actually happened that some SYMMOL users require the symmetry of much more deformed molecular groups, for which SYMMOL fails. One way to overcome this problem is to impose that the relationship (1) only applies if x_i and x_j are chemically (or topologically) identical.
+
+However, even under this more stringent condition there are still problems. In fact, consider for example the case of tetraphenylmethane. The maximum symmetry for this molecule is (-4)mm, which however can be obtained with two different ring conformations: the first one with connected pairs of phenyls of the 2-axis parallel to each other; the second one with all phenyls rotated by 90° with respect to the first conformation. A further problem arises from the fact that none of these conformations could make sense chemically because they do not correspond to a minimum energy.
+
+The new version of SYMMOL has therefore not been written to solve any symmetry problem but only to provide a tool to help establish the possible symmetries of a molecule: it will be up to the chemist to choose the actual group of maximum symmetry, possibly using energy considerations.
+
+* Code development
+
+The new SYMMOL will have two main modes of action:
+
+1) Automatically, the program finds the maximum symmetry of a group of internal atoms that can be assumed to undergo a small deformation, less than half the minimum bonding distance of the group of atoms under examination. At this point the possibility of extending this symmetry to the whole molecule will be topologically analyzed. If this is impossible, the code will tell the user which elements of symmetry are incompatible with the topology of the molecule. At this point the user will have to choose the subgroup to use for the symmetry, indicating one or more group generators among those not discarded. Returning to the tetraphenylmethane example, if the five most internal atoms are chosen as the internal group, the group found will be T_d and with the extension to all the remaining atoms will have to indicate the incompatibility with the molecular topology of the c_3 axes; at this point the symmetry elements not discarded will be shown, with a sequence number and the consistency index and the user will be asked to choose the generators. If, for example, the user chooses two s_4 axes that automatically generate the c_3 axis, the program will report the error. Only once the new symmetry group has been established will the program continue the analysis.
+
+2) The code receives as input a symmetry group (via generators) and two reference axes (using definitions of type x(y,z) = A + B + 2C – D where A, B, C, D are names or sequence numbers of atoms, and a minimum group of atoms to which the symmetry is initially applied. At this point we fall back to case (1).
+
+* Use of topology for symmetrization

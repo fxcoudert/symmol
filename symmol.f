@@ -12,32 +12,14 @@ c     CHARACTER*60 inpfile
       COMMON/AT3/MOL(NMA),MLG(NMA)
       CHARACTER*6 NAME,SPEC
       COMMON/AT4/NAME(NMA)
-      integer out
-      COMMON/output/out
 c________________________________________________________________________
-c if you want address all the output on the standard output, suppress the two
-c sequent instruction and activate the third
-c
-      out=9
-      OPEN(9,file='symmol.out')
-c     out=6
-c________________________________________________________________________
-      if(out.eq.9)then
-        write(*,*)'                  ============'
-        write(*,*)'                     SYMMOL'
-        write(*,*)' A PROGRAM FOR THE SYMMETRIZATION OF GROUPS OF ATOMS'
-        write(*,*)'       By Tullio Pilati and Alessandra Forni'
-        write(*,*)'               Version November 4th 2002'
-        write(*,*)' ==================================================='
-        write(*,*)
-      endif
-      write(out,*)'                  ============'
-      write(out,*)'                     SYMMOL'
-      write(out,*)' A PROGRAM FOR THE SYMMETRIZATION OF GROUPS OF ATOMS'
-      write(out,*)'       By Tullio Pilati and Alessandra Forni'
-      write(out,*)'               Version November 4th 2002'
-      write(out,*)' ==================================================='
-      write(out,*)
+      write(*,*)'                  ============'
+      write(*,*)'                     SYMMOL'
+      write(*,*)' A PROGRAM FOR THE SYMMETRIZATION OF GROUPS OF ATOMS'
+      write(*,*)'       By Tullio Pilati and Alessandra Forni'
+      write(*,*)'               Version November 4th 2002'
+      write(*,*)' ==================================================='
+      write(*,*)
 c 900 write(*,*)'input file name?'
 c     read(*,'(a)')inpfile
 c     inquire(file=inpfile,exist=esiste)
@@ -55,35 +37,35 @@ c********************************************
       if(RIGA(1:1).eq.'#') go to 1010
       READ(RIGA,*)indwgh,indtol,DCM,DCME
       if(DCME.lt.DCM)DCME=DCM
-      write(out,*)
+      write(*,*)
       if(indwgh.le.1)then
       indwgh=1
-      write(out,*)' INDWGH=1 ===> WEIGHTS AS ATOMIC MASS'
+      write(*,*)' INDWGH=1 ===> WEIGHTS AS ATOMIC MASS'
       endif
-      if(indwgh.eq.2)write(out,*)' INDWGH=2 ===> UNITARY WEIGHTS'
-      if(indwgh.eq.3)write(out,*)' INDWGH=3 ===> WEIGHTS BASED ON S.U.'
+      if(indwgh.eq.2)write(*,*)' INDWGH=2 ===> UNITARY WEIGHTS'
+      if(indwgh.eq.3)write(*,*)' INDWGH=3 ===> WEIGHTS BASED ON S.U.'
       if(indtol.le.1)then
       indtol=1
-      write(out,*)' INDTOL=1 ===> TOLERANCE=CONSTANT'
+      write(*,*)' INDTOL=1 ===> TOLERANCE=CONSTANT'
       endif
-      if(indtol.eq.2)write(out,*)
+      if(indtol.eq.2)write(*,*)
      *               ' INDTOL=2 ===> TOLERANCE BASED ON DISTANCES'
       if(indtol.eq.3)
-     *         write(out,*)' INDTOL=3 ===> TOLERANCE BASED ON S.U.'
-      write(out,1)DCM,DCME
+     *         write(*,*)' INDTOL=3 ===> TOLERANCE BASED ON S.U.'
+      write(*,1)DCM,DCME
     1 format('  CONSTANTS OF TOLERANCE=',2f7.3)
-      write(out,*)
+      write(*,*)
 c********************************************
       i=1
       MOmax=0
  1100 read(*,'(A80)',END=1200)RIGA
       if(i.gt.NMA)then
-        write(out,*)'ERROR: TOO MANY ATOMS IN INPUT'
-        write(out,*)'Enlarge PARAMETER NMA'
-        write(out,*)'Actual value: PARAMETER (NMA=1000)'
+        write(*,*)'ERROR: TOO MANY ATOMS IN INPUT'
+        write(*,*)'Enlarge PARAMETER NMA'
+        write(*,*)'Actual value: PARAMETER (NMA=1000)'
         stop
       endif
-c     write(out,*)riga
+c     write(*,*)riga
       if(RIGA(1:1).eq.'#')go to 1100
       READ(RIGA,'(A6,I2,6f9.5)')NAME(i),MOL(i),(X(k,i),k=1,3),
      *(SX(k,i),k=1,3)
@@ -112,12 +94,12 @@ c     write(out,*)riga
             enddo
         enddo
         if(sxmax.lt.0.00001d0) then
-          write(out,*)
-          write(out,*) ' ERROR: S.U. ON COORDINATES ARE MISSING.'
+          write(*,*)
+          write(*,*) ' ERROR: S.U. ON COORDINATES ARE MISSING.'
           if(indtol.eq.3)
-     *       write(out,*) '       INTRODUCE THE S.U. OR CHANGE INDTOL'
+     *       write(*,*) '       INTRODUCE THE S.U. OR CHANGE INDTOL'
           if(indwgh.eq.3)
-     *       write(out,*) '       INTRODUCE THE S.U. OR CHANGE INDWGH'
+     *       write(*,*) '       INTRODUCE THE S.U. OR CHANGE INDWGH'
           stop
         endif
       endif
@@ -125,11 +107,11 @@ C
       call mass(NA,ATOM)
 c     call costanti
       call cella
-      write(out,*)
-      write(out,*)' ATOM GROUP  INPUT COORDINATES AND THEIR S.U.'
-      write(out,*)
+      write(*,*)
+      write(*,*)' ATOM GROUP  INPUT COORDINATES AND THEIR S.U.'
+      write(*,*)
       do I=1,NA
-      write(out,'(1x,A6,i2,1x,6f9.5,2x,i2)')NAME(I),MOL(I)
+      write(*,'(1x,A6,i2,1x,6f9.5,2x,i2)')NAME(I),MOL(I)
      *,(X(k,I),k=1,3),(SX(k,I),k=1,3)
       enddo
 C
@@ -176,8 +158,6 @@ C
       PARAMETER (maxorder=8)
       implicit double precision (a-h,o-z)
       dimension A(3,3,*),B(3,3),C(3,3,2)
-      integer out
-      COMMON/output/out
       call azzera(C,0.d0,18)
       C(1,1,1)=1.d0
       C(2,2,1)=1.d0
@@ -193,14 +173,14 @@ C
         if(ium(C,B,1.d-2,1,1).eq.1)go to 1000
         call prodmm(A,B,B,i,1,1)
       enddo
-      write(out,*)'INPUT PARAMETER DCM probably too HIGH. Reduce it!'
+      write(*,*)'INPUT PARAMETER DCM probably too HIGH. Reduce it!'
       stop
 1000  if(m.lt.6.or.msign.eq.1)return
       m1=(m/4)*4
       if(m1.ne.m)m=m/invers
-c     write(out,*)'ax_order,i,m,msign,invers'
-c     write(out,'(10i5)')i,m,msign,invers
-c     write(out,'(3f10.6)')((A(ii,kk,i),kk=1,3),ii=1,3)
+c     write(*,*)'ax_order,i,m,msign,invers'
+c     write(*,'(10i5)')i,m,msign,invers
+c     write(*,'(3f10.6)')((A(ii,kk,i),kk=1,3),ii=1,3)
       return
       end
       subroutine azzera(A,COST,N)
@@ -214,8 +194,6 @@ C azzeraMENTO
       subroutine bond(XO,IASU,N)
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
-      integer out
-      COMMON/output/out
       COMMON/AT1/X(3,NMA),AMAS(NMA),RCOV(NMA),MSP(NMA)
       CHARACTER*6 NAME
       COMMON/AT4/NAME(NMA)
@@ -231,7 +209,7 @@ C azzeraMENTO
       r2=(r1+RCOV(k))*1.2
       call combli(XO,XO,T,1.d0,-1.d0,i,k,1)
       call prods(t,t,d1,1,1,2)
-c     write(out,'(a20,2i3,2f10.5)')'i,k,d1,r2',i,k,d1,r2
+c     write(*,'(a20,2i3,2f10.5)')'i,k,d1,r2',i,k,d1,r2
       if(d1.gt.r2)go to 1100
       N1=N1+1
       if(N1.gt.20)then
@@ -241,10 +219,10 @@ c     write(out,'(a20,2i3,2f10.5)')'i,k,d1,r2',i,k,d1,r2
  1100 continue
       NLEG(i)=N1
  1200 continue
-c     write(out,*)'LEGAMI'
+c     write(*,*)'LEGAMI'
 c     do ii=1,N
 c     N1=NLEG(II)
-c     write(out,'(20i3)')(LEGAMI(kk,ii),kk=1,N1)
+c     write(*,'(20i3)')(LEGAMI(kk,ii),kk=1,N1)
 c     enddo
       return
       end
@@ -298,7 +276,7 @@ c     REAL a,b,d,e,etemp,fu,fv,fw,fx,p,q,r,tol1,tol2,u,v,w,x,xm
           u=x+sign(tol1,d)
         endif
         fu=func(u)
-        write(6,*)'brent,fu,fx',fu,fx
+        write(*,*)'brent,fu,fx',fu,fx
         if(fu.le.fx) then
           if(u.ge.x) then
             a=x
@@ -335,8 +313,6 @@ c     REAL a,b,d,e,etemp,fu,fv,fw,fx,p,q,r,tol1,tol2,u,v,w,x,xm
       END
       subroutine cella
       implicit double precision (a-h,o-z)
-      integer out
-      COMMON/output/out
       common/matcel/PC(7),PCR(7),O(3,3),OI(3,3),G(3,3),GI(3,3),CS(12)
       RAD=57.29577951308232D0
       ARAD=1.D0/RAD
@@ -383,17 +359,17 @@ c     REAL a,b,d,e,etemp,fu,fv,fw,fx,p,q,r,tol1,tol2,u,v,w,x,xm
       CS(10)=SIN(ARAD*PCR(4))
       CS(11)=SIN(ARAD*PCR(5))
       CS(12)=SIN(ARAD*PCR(6))
-      write(out,*)
-      write(out,*)' CELL'
-      write(out,'(3f10.5,3f10.3,f11.5,/)')PC
-c     write(out,*)' RECIPROCAL CELL'
-c     write(out,'(3f10.5,3f10.3,f11.5,/)')PCR
-c     write(out,*)' METRIC MATRIX'
-c     write(out,'(3g16.6)')((G(i,k),k=1,3),i=1,3)
-c     write(out,*)
-c     write(out,*)' ORTHOGONALIZATION MATRIX'
-c     write(out,'(3g16.6)')((O(i,k),k=1,3),i=1,3)
-c     write(out,*)
+      write(*,*)
+      write(*,*)' CELL'
+      write(*,'(3f10.5,3f10.3,f11.5,/)')PC
+c     write(*,*)' RECIPROCAL CELL'
+c     write(*,'(3f10.5,3f10.3,f11.5,/)')PCR
+c     write(*,*)' METRIC MATRIX'
+c     write(*,'(3g16.6)')((G(i,k),k=1,3),i=1,3)
+c     write(*,*)
+c     write(*,*)' ORTHOGONALIZATION MATRIX'
+c     write(*,'(3g16.6)')((O(i,k),k=1,3),i=1,3)
+c     write(*,*)
       return
       END
       subroutine combli(A,B,C,D,E,I,J,K)
@@ -443,9 +419,9 @@ c Gruppo completato
 C HA TROVATO UNA NUOVA MATRICE
  2610 NMS=NMS+1
       IF(NMS.LE.NMG) GO TO 2630
-      write(6,2)
+      write(*,2)
     2 format(' ERROR: TOO MANY MATRICES FOUND')
-      write(6,'(3(3F10.5,/),/)')(((SIM(I,J,K),J=1,3),I=1,3),K=1,NMS)
+      write(*,'(3(3F10.5,/),/)')(((SIM(I,J,K),J=1,3),I=1,3),K=1,NMS)
 c ritorno per errore
       RETURN 1
  2630 call trasfm(CO,SIM,1,NMS)
@@ -468,7 +444,7 @@ C
       common/rmsmin/RV(3,3),ppo(3,NMV),ppu(3,NMV),npu
       dimension t(3),po(3),pu(3),rpu(3)
       dimension RX(3,3),RY(3,3),RZ(3,3),RR(3,3)
-c     write(6,'(6F9.5)')t
+c     write(*,'(6F9.5)')t
       call azzera(RX,0.d0,9)
       call azzera(RY,0.d0,9)
       call azzera(RZ,0.d0,9)
@@ -488,12 +464,12 @@ c     write(6,'(6F9.5)')t
       RZ(2,1)=-RZ(1,2)
       RZ(2,2)=dcos(t(3))
       RZ(3,3)=1.d0
-c     write(6,'(3g12.5)')RX
-c     write(6,*)
-c     write(6,'(3g12.5)')RY
-c     write(6,*)
-c     write(6,'(3g12.5)')RZ
-c     write(6,*)
+c     write(*,'(3g12.5)')RX
+c     write(*,*)
+c     write(*,'(3g12.5)')RY
+c     write(*,*)
+c     write(*,'(3g12.5)')RZ
+c     write(*,*)
       call prodmm(RY,RX,RR,1,1,1)
       call prodmm(RZ,RR,RV,1,1,1)
 C ortonormalizzazione di precisione
@@ -503,7 +479,7 @@ C ortonormalizzazione di precisione
       call norm(RV,1)
       call norm(RV,2)
       call norm(RV,3)
-c     write(6,'(3g12.5)')RV
+c     write(*,'(3g12.5)')RV
 C fine ortonormalizzazione di precisione
       func=0.d0
       do i=1,npu
@@ -514,11 +490,11 @@ C fine ortonormalizzazione di precisione
        pu(2)=ppu(2,i)
        pu(3)=ppu(3,i)
        call prodmv(RV,pu,pu,1,1,1)
-c     write(6,'(6F9.5)')po,pu
+c     write(*,'(6F9.5)')po,pu
        func=func+(po(1)-pu(1))**2+(po(2)-pu(2))**2+(po(3)-pu(3))**2
       enddo
       crms=func
-c     write(6,*)func
+c     write(*,*)func
       return
       end
       FUNCTION det(X,N)
@@ -770,8 +746,6 @@ C vedi International Tables for Crystallography II, p. 43, equaz. 2,3,4, 6
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       CHARACTER*6 NAME
       COMMON/AT4/NAME(NMA)
       common/matcel/PC(7),PCR(7),O(3,3),OI(3,3),G(3,3),GI(3,3),CS(12)
@@ -797,9 +771,9 @@ C vedi International Tables for Crystallography II, p. 43, equaz. 2,3,4, 6
       if(MD(I3,1).ne.II)go to 1800
       mp(3)=I3
       call eq_plane(XO(1,I1),XO(1,I2),XO(1,I3),eqp)
-c     write(out,*)'equazione del piano'
-c     write(out,'(4f10.6,3i5)')eqp,mp(1),mp(2),mp(3)
-c     write(out,'(4f10.6,3i5)')DXM(I1),DXM(I2),DXM(I3),eqp(4)
+c     write(*,*)'equazione del piano'
+c     write(*,'(4f10.6,3i5)')eqp,mp(1),mp(2),mp(3)
+c     write(*,'(4f10.6,3i5)')DXM(I1),DXM(I2),DXM(I3),eqp(4)
 C se il piano e' troppo vicino all'origine viene scartato
       if(eqp(4).lt.0.5)go to 1800
       in3=I3+1
@@ -808,14 +782,14 @@ C se il piano e' troppo vicino all'origine viene scartato
       mp(4)=I4
       d2=eqp(1)*XO(1,I4)+eqp(2)*XO(2,I4)+eqp(3)*XO(3,I4)+eqp(4)
       if(DABS(d2).gt.DXM(I4))go to 1700
-c     write(out,'(A20,i5,f10.5)')'IV atomo del piano',mp(4),d2
+c     write(*,'(A20,i5,f10.5)')'IV atomo del piano',mp(4),d2
  1300 in4=I4+1
       do 1600 I5=in4,N
       if(MD(I5,1).ne.II)go to 1600
       mp(5)=I5
       d2=eqp(1)*XO(1,I5)+eqp(2)*XO(2,I5)+eqp(3)*XO(3,I5)+eqp(4)
       if(DABS(d2).gt.DXM(I5))go to 1600
-c     write(out,'(A20,i5,f10.5)')' V atomo del piano',mp(5),d2
+c     write(*,'(A20,i5,f10.5)')' V atomo del piano',mp(5),d2
 C in mp ci sono i possibili 5 atomi equivalenti rispetto all'asse 5
       dmin=100.
       dp(1)=dmin
@@ -864,9 +838,9 @@ che siano uguali ( a meno della tolleranza) le distanze 1-2
         dmed=dmed+dp(i)
       enddo
       dmed=dmed*0.2d0
-c     write(out,'(a5,5i5)')'io',io
-c     write(out,'(a5,5f10.5)')'dp',dp
-c     write(out,'(a5,5f10.5)')'dmed',dmed
+c     write(*,'(a5,5i5)')'io',io
+c     write(*,'(a5,5f10.5)')'dp',dp
+c     write(*,'(a5,5f10.5)')'dmed',dmed
       call AZZERA(A,0.d0,9)
       do i=1,5
         if(DABS(dmed-dp(i)).gt.DXM(i)*.5)go to 1600
@@ -875,7 +849,7 @@ c asse C5 come somma dei vertici del pentagono
         A(2,3)=A(2,3)+XO(2,io(i))
         A(3,3)=A(3,3)+XO(3,io(i))
       enddo
-c     write(out,'(a5,3f10.6)')'A(3)',(A(i,3),i=1,3)
+c     write(*,'(a5,3f10.6)')'A(3)',(A(i,3),i=1,3)
 C mette il riferimento in modo che il primo asse 5 coincida con z e che
 C il secondo sia nel piano xz
       A(1,1)=XO(1,io(1))+XO(1,io(2))-XO(1,io(3))-XO(1,io(4))+
@@ -893,7 +867,7 @@ C assi C2) passo ad altro pentagono
       call norm(A,2)
       call prodv(A,A,A,2,3,1)
       call traspo(A,A,1,1)
-c     write(out,'(a5,3(/,3f10.6))')'A',((A(i,k),i=1,3),k=1,3)
+c     write(*,'(a5,3(/,3f10.6))')'A',((A(i,k),i=1,3),k=1,3)
       call r_frame(A,XO,N)
 Costruzione dell'asse C5
       call azzera(B,0.d0,9)
@@ -905,11 +879,11 @@ Costruzione dell'asse C5
       B(1,2)=-CB
       B(2,1)=CB
       B(3,3)=1.d0
-c     write(out,'(a5,3(/,3f10.6))')'B',((B(i,k),i=1,3),k=1,3)
+c     write(*,'(a5,3(/,3f10.6))')'B',((B(i,k),i=1,3),k=1,3)
 c verifica e ottimizza il primo asse 5
       call verify(XO,B,MK,MN,MV,N)
-c     write(out,*)'primo asse C5 MV,NMS',MV,NMS
-c     write(out,'(30i3)')(MK(ll,NMS),ll=1,N)
+c     write(*,*)'primo asse C5 MV,NMS',MV,NMS
+c     write(*,'(30i3)')(MK(ll,NMS),ll=1,N)
       if(MV.eq.0)go to 1600
       call opt_axis(XO,PESO,V,MK,N,2)
 c ottimizza l'sse x con la stessa tecnica precedente
@@ -932,7 +906,7 @@ c ottimizza l'sse x con la stessa tecnica precedente
       call norm(A,2)
       call prodv(A,A,A,2,3,1)
       call traspo(A,A,1,1)
-c     write(out,'(a5,3(/,3f10.6))')'A',((A(i,k),i=1,3),k=1,3)
+c     write(*,'(a5,3(/,3f10.6))')'A',((A(i,k),i=1,3),k=1,3)
       call r_frame(A,XO,N)
       go to 2010
  1600 continue
@@ -959,7 +933,7 @@ C testare tutti i possibili pentagoni
  2020 continue
       io(1)=kk
       dp1=XO(3,kk)
-c     write(out,*)'io(1),dp1',io(1),dp1
+c     write(*,*)'io(1),dp1',io(1),dp1
       do k=1,4
         k1=k+1
         io(k1)=MK(io(k),2)
@@ -979,8 +953,8 @@ C eliminazione (eventuale) degli atomi del primo piano
       me=me+1
       meq(me)=i
  2030 continue
-c     write(out,*)'me,meq',me
-c     write(out,'(30i4)')(meq(i),i=1,me)
+c     write(*,*)'me,meq',me
+c     write(*,'(30i4)')(meq(i),i=1,me)
 C scelta degli atomi del secondo pentagono
  2040 do i=1,me
         if(meq(i).ne.0)go to 2050
@@ -1004,15 +978,15 @@ C somma vettori del primo pentagono opportunamente ruotati
 C costruzione dell'asse C2 perpendicolare a C5 e parallelo a x
  2210 call azzera(A,0.d0,9)
       call azzera(vd,0.d0,15)
-c     write(out,*)'io,mp'
-c     write(out,'(5i4)')io,mp
+c     write(*,*)'io,mp'
+c     write(*,'(5i4)')io,mp
       do 2250 i=1,5
       k=io(i)
       do 2220 l=1,NMS
       if(MK(k,l).ne.io(1))go to 2220
       call prodmv(SIM,XO,vd,l,k,3)
       call combli(vd,vd,vd,1.d0,1.d0,3,1,1)
-c     write(out,'(a20,i5,3f10.5)')'io(i),vd(1)',io(i),(vd(kk,1),kk=1,3)
+c     write(*,'(a20,i5,3f10.5)')'io(i),vd(1)',io(i),(vd(kk,1),kk=1,3)
       go to 2230
  2220 continue
  2230 k=mp(i)
@@ -1020,7 +994,7 @@ c     write(out,'(a20,i5,3f10.5)')'io(i),vd(1)',io(i),(vd(kk,1),kk=1,3)
       if(MK(k,l).ne.mp(1))go to 2240
       call prodmv(SIM,XO,vd,l,k,3)
       call combli(vd,vd,vd,1.d0,1.d0,3,2,2)
-c     write(out,'(a20,i5,3f10.5)')'mp(i),vd(2)',mp(i),(vd(kk,2),kk=1,3)
+c     write(*,'(a20,i5,3f10.5)')'mp(i),vd(2)',mp(i),(vd(kk,2),kk=1,3)
       go to 2250
  2240 continue
  2250 continue
@@ -1028,19 +1002,19 @@ c     write(out,'(a20,i5,3f10.5)')'mp(i),vd(2)',mp(i),(vd(kk,2),kk=1,3)
       vd(3,2)=0.d0
       call norm(vd,1)
       call norm(vd,2)
-c     write(out,'(a20,3f10.5)')'vd(1)',(vd(kk,1),kk=1,3)
-c     write(out,'(a20,3f10.5)')'vd(2)',(vd(kk,2),kk=1,3)
+c     write(*,'(a20,3f10.5)')'vd(1)',(vd(kk,1),kk=1,3)
+c     write(*,'(a20,3f10.5)')'vd(2)',(vd(kk,2),kk=1,3)
       cost=DCOS(36.1/RAD)
       do i=1,5
         call prodmv(SIM,vd,vd,2,2,2)
         call prods(vd,vd,cosa,1,2,1)
-c     write(out,'(a14,8f9.5)')'vd(1),vd(2)',(vd(kk,1),kk=1,3),
+c     write(*,'(a14,8f9.5)')'vd(1),vd(2)',(vd(kk,1),kk=1,3),
 c    *(vd(kk,2),kk=1,3),cosa,cost
         if(cosa.ge.cost)go to 2300
       enddo
  2300 call combli(vd,vd,A,1.d0,1.d0,1,2,1)
       call norm(A,1)
-c     write(out,'(a20,3f10.5)') 'A(1)',(A(kk,1),kk=1,3)
+c     write(*,'(a20,3f10.5)') 'A(1)',(A(kk,1),kk=1,3)
       A(3,3)=1.d0
       call prodv(A,A,A,3,1,2)
       call norm(A,2)
@@ -1048,13 +1022,13 @@ c     write(out,'(a20,3f10.5)') 'A(1)',(A(kk,1),kk=1,3)
       call norm(A,1)
       call traspo(A,A,1,1)
       call r_frame(A,XO,N)
-c     write(out,'(i4,3f9.5)')(lll,(XO(kk,lll),kk=1,3),lll=1,N)
+c     write(*,'(i4,3f9.5)')(lll,(XO(kk,lll),kk=1,3),lll=1,N)
       call azzera(B,0.d0,9)
       B(1,1)= 1.d0
       B(2,2)=-1.d0
       B(3,3)=-1.d0
       call verify(XO,B,MK,MN,MV,N)
-c     write(out,*)'asse C2 MV,NMS',MV,NMS
+c     write(*,*)'asse C2 MV,NMS',MV,NMS
       if(MV.eq.1)go to 2310
       call traspo(A,A,1,1)
       call r_frame(A,XO,N)
@@ -1064,21 +1038,21 @@ c     write(out,*)'asse C2 MV,NMS',MV,NMS
       A(3,3)= 1.d0
       call r_frame(A,XO,N)
       call verify(XO,B,MK,MN,MV,N)
-c     write(out,*)'asse C2 MV,NMS',MV,NMS
+c     write(*,*)'asse C2 MV,NMS',MV,NMS
       if(MV.eq.1)go to 2310
       call traspo(A,A,1,1)
       call r_frame(A,XO,N)
       go to 2040
 c     ico=.true.
 c     call compl_gr(MK,N,*5000)
-c     write(out,*)'asse C2,NMS',NMS
+c     write(*,*)'asse C2,NMS',NMS
 Controlla il centro
  2310 call azzera(B,0.d0,9)
       B(1,1)=-1.d0
       B(2,2)=-1.d0
       B(3,3)=-1.d0
       call verify(XO,B,MK,MN,MV,N)
-c     write(out,*)'CENTRO MV,NMS',MV,NMS
+c     write(*,*)'CENTRO MV,NMS',MV,NMS
 Costruzione dell'asse C5 a |x|=63.43494882 da z e la cui priezione e' a 18 da x
       call azzera(A,0.d0,9)
       ROT=-63.43494882d0/RAD
@@ -1102,14 +1076,14 @@ c rotazione 18 su z
       B(2,1)= CB
       B(3,3)=1.d0
       call prodmm(B,A,A,1,1,1)
-c     write(out,*)' matrice di rotazione'
-c     write(out,'(a12,2f10.6)')'ROT,ROT18',ROT,ROT18
-c     write(out,'(3f10.6)')((A(i,k),k=1,3),i=1,3)
+c     write(*,*)' matrice di rotazione'
+c     write(*,'(a12,2f10.6)')'ROT,ROT18',ROT,ROT18
+c     write(*,'(3f10.6)')((A(i,k),k=1,3),i=1,3)
       call prodmm(SIM,A,B,2,1,1)
       call traspo(A,A,1,1)
       call prodmm(A,B,A,1,1,1)
       call verify(XO,A,MK,MN,MV,N)
-c     write(out,*)'secondo asse C5 ,MV,NMS',MV,NMS
+c     write(*,*)'secondo asse C5 ,MV,NMS',MV,NMS
       if(MV.eq.1)go to 4000
       if(ROT18.lt.0.d0)then
       ROT18=-ROT18
@@ -1274,8 +1248,6 @@ C VERO ium=1      FALSO  ium=0
       subroutine mass(NAT,ATOM)
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
-      integer out
-      COMMON/output/out
       CHARACTER*2 ATOM(NMA)
       CHARACTER*2 SIMBO(103),ITT
       REAL*8 MASSA(103),RAGGI(103)
@@ -1330,12 +1302,12 @@ C per i raggi degli elementi dal Ce a Lu ho interpolato
           IF(ATOM(J).EQ.SIMBO(I)) THEN
             AMAS(J)=MASSA(I)
             RCOV(J)=RAGGI(I)
-c           write(out,'(a2,2f7.3)')ATOM(J),AMAS(J),RCOV(J)
+c           write(*,'(a2,2f7.3)')ATOM(J),AMAS(J),RCOV(J)
             GOTO 2
           ENDIF
         ENDDO
-        write(out,*)
-        write(out,3) ATOM(J)
+        write(*,*)
+        write(*,3) ATOM(J)
     3   format(' ERROR: MISSING DATA FOR THE ATOM-',A2,'-')
         STOP
     2   CONTINUE
@@ -1455,8 +1427,6 @@ C NORMALIZZAZIONE DEL  VETTORE A
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       COMMON/SIMME/SIM(3,3,NMG),DEV(NMG),CSM(NMG),CSMT,NMS,MTG(NMG,NMG)
       DIMENSION XO(3,NMA),MK(NMA,NMG),V3(3),PESO(NMA),VS(3)
       DIMENSION IV(NMA),CO(3,NMA),W(NMA),nge(NMA)
@@ -1503,7 +1473,7 @@ cerca il gruppo piu' lontano dall'elemento di simmetria (im)
          call prodmv(SIM,CO,VS,IAX,i,1)
          call combli(CO,VS,VS,1.d0,cost,i,1,1)
          call prods(VS,VS,dis,1,1,1)
-c        write(out,'(i3,6f10.5)')i,(CO(j,i),j=1,3),VS
+c        write(*,'(i3,6f10.5)')i,(CO(j,i),j=1,3),VS
          if(dis.gt.dism)then
             dism=dis
             im=i
@@ -1511,7 +1481,7 @@ c        write(out,'(i3,6f10.5)')i,(CO(j,i),j=1,3),VS
       enddo
       call azzera(V3,0.d0,3)
          call prods(CO,CO,dim,im,im,2)
-c      write(out,'(6him,dim,i3,3f10.5)')im,dim
+c      write(*,'(6him,dim,i3,3f10.5)')im,dim
 c somma fra loro tutti i gruppi con un segno determinato dall'angolo
 c fra il gruppo in esame ed il gruppo im
       do i=1,ng
@@ -1535,15 +1505,13 @@ c matrice di rotazione definitiva
       subroutine out_bond(XO,IEQAT,IASU,N)
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
-      integer out
-      COMMON/output/out
       CHARACTER*6 NAME
       COMMON/AT4/NAME(NMA)
       COMMON/AT5/LEGAMI(20,NMA),NLEG(NMA)
       DIMENSION T(3),V(3),IASU(NMA),tableg(20,NMA),XO(3,NMA),IEQAT(NMA)
       CHARACTER*80 riga
-      write(out,*)
-c     write(out,'(a6,3f10.6)')(NAME(IEQAT(I)),(XO(k,i),k=1,3),i=1,N)
+      write(*,*)
+c     write(*,'(a6,3f10.6)')(NAME(IEQAT(I)),(XO(k,i),k=1,3),i=1,N)
       RAD=57.29577951308232D0
       riga=' '
       nb=0
@@ -1559,14 +1527,14 @@ c     write(out,'(a6,3f10.6)')(NAME(IEQAT(I)),(XO(k,i),k=1,3),i=1,N)
       write(riga(nc:nc+25),'(a6,a1,a6,f7.4,6x)')NAME(IEQAT(I)),'-',
      *NAME(IEQAT(l)),tableg(k,i)
       if(nb.eq.3)then
-        write(out,'(a)')riga
+        write(*,'(a)')riga
         nb=0
         riga=' '
       endif
  1300 continue
  1400 continue
-      if(nb.ne.0)write(out,'(a)')riga
-      write(out,*)
+      if(nb.ne.0)write(*,'(a)')riga
+      write(*,*)
         riga=' '
         nb=0
       do 2000 i=1,N
@@ -1587,15 +1555,15 @@ c     write(out,'(a6,3f10.6)')(NAME(IEQAT(I)),(XO(k,i),k=1,3),i=1,N)
       write(riga(nc:nc+27),'(a6,2(a1,a6),f8.3,7x)')NAME(IEQAT(I1)),
      *'-',NAME(IEQAT(I)),'-',NAME(IEQAT(I2)),ang
       if(nb.eq.2)then
-        write(out,'(a)')riga
+        write(*,'(a)')riga
         nb=0
         riga=' '
       endif
  1800 continue
  1900 continue
  2000 continue
-      if(nb.ne.0)write(out,'(a)')riga
-      write(out,*)
+      if(nb.ne.0)write(*,'(a)')riga
+      write(*,*)
       return
       END
       subroutine pratba(B,A,C,I,J,K)
@@ -1680,15 +1648,15 @@ C ruota il riferimento e le coordinate
       implicit double precision (a-h,o-z)
       COMMON/ORIE/OR(3,3),OT(3,3),OTI(3,3),BARC(3),BARO(3),RIN(3)
       DIMENSION CO(3,3),XO(3,*)
-c     write(6,*)'rotazione del riferimento'
-c     write(6,'(3f10.6)')((CO(i,k),k=1,3),i=1,3)
+c     write(*,*)'rotazione del riferimento'
+c     write(*,'(3f10.6)')((CO(i,k),k=1,3),i=1,3)
       DO 1010 I=1,N
  1010 call prodmv(CO,XO,XO,1,I,I)
       call prodmm(CO,OR,OR,1,1,1)
       call prodmm(CO,OT,OT,1,1,1)
       call inv33(OT,OTI,1,1)
-c     write(6,*)'nuove coordinate'
-c     write(6,'(i5,3f10.6)')(i,(XO(k,i),k=1,3),i=1,N)
+c     write(*,*)'nuove coordinate'
+c     write(*,'(i5,3f10.6)')(i,(XO(k,i),k=1,3),i=1,N)
       return 
       end
       subroutine rms_min(tm)
@@ -1711,11 +1679,11 @@ C
         do i3=1,3
          t(3)=tm(3)+(2-i3)*passo
          arms=crms(t)
-C        write(6,*)t,arm,i1,i2,i3
+C        write(*,*)t,arm,i1,i2,i3
          if(arms.lt.rm)then
           ind1=1
           rm=arms
-c         write(6,*)'rm,passo',rm,passo
+c         write(*,*)'rm,passo',rm,passo
           call trasfv(t,tm,1,1)
          endif
         enddo
@@ -1730,14 +1698,12 @@ c         write(6,*)'rm,passo',rm,passo
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       COMMON/SIMME1/RMS(3,NMA),RMST
       DIMENSION CO(3,NMA),XO(3,NMA),XS(3,NMA),SI(3,3,NMG),D(NMA)
       DIMENSION DEL(4),DLM(4),V3(3),ID(4),MK(NMA,NMG),ISU(NMG)
       DIMENSION dc(NMA),cf(NMA)
 calcola le coordinate simmetrizzate XS
-c     write(out,'(i3,3f10.5,)')(kk,(XO(ll,kk),ll=1,3),kk=1,N)
+c     write(*,'(i3,3f10.5,)')(kk,(XO(ll,kk),ll=1,3),kk=1,N)
       NAZ=3*N
       call azzera(CO,0.d0,NAZ)
       call azzera(XS,0.d0,NAZ)
@@ -1747,7 +1713,7 @@ c     write(out,'(i3,3f10.5,)')(kk,(XO(ll,kk),ll=1,3),kk=1,N)
       call azzera(cf,0.d0,N)
 C ISU=indice delle matrici del sottogruppo in considerazione
 C nes=numero di elementi del sottogruppo
-c     write(out,'(a3,12i3)')'ISU',(ISU(J),J=1,nes)
+c     write(*,'(a3,12i3)')'ISU',(ISU(J),J=1,nes)
       DO 2800 I=1,N
       call prods(XO,XO,D(I),I,I,2)
       DO 2790 J=1,nes
@@ -1755,7 +1721,7 @@ c     write(out,'(a3,12i3)')'ISU',(ISU(J),J=1,nes)
        call prodmv(SI,XO,V3,ISU(J),I,1)
        call combli(XS,V3,XS,1.d0,1.d0,K,1,K)
  2790 continue
-c     write(out,'(i2,4f9.5)')I,(XO(kk,I),kk=1,3),D(I)
+c     write(*,'(i2,4f9.5)')I,(XO(kk,I),kk=1,3),D(I)
  2800 CONTINUE
       do i=1,N
        do J=1,3
@@ -1773,7 +1739,7 @@ c     write(out,'(i2,4f9.5)')I,(XO(kk,I),kk=1,3),D(I)
           XS(J,I)=XS(J,I)*cf(i)
         enddo
       enddo
-c     write(out,'(i2,6f10.6)')1,(XS(kk,1),kk=1,3),dc(1),cf(1)
+c     write(*,'(i2,6f10.6)')1,(XS(kk,1),kk=1,3),dc(1),cf(1)
 C il fattore di correzione cf=media delle distanze atomi equivalenti baricentro,
 C corregge le coordinate simmetrizzate facendo si che queste equivalgano alla
 C media per pura rotazione degli atomi equivalenti
@@ -1830,8 +1796,6 @@ C From the group matrices gives the Schoenflies symbol
       implicit double precision (a-h,o-z)
       PARAMETER (NMA=1000)
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       COMMON/SIMME/SIM(3,3,NMG),DEV(NMG),CMS(NMG),CSMT,NMS,MTG(NMG,NMG)
       COMMON/SIMME1/RMS(3,NMA),RMST
       character*3 lbls,pt*7
@@ -1880,7 +1844,7 @@ C_______________________________________________________
         if(m.gt.maxasp.and.msign.eq.1)maxasp=m
         if(m.gt.maxasi.and.msign.eq.-1)maxasi=m
         if(m.eq.2.and.mplane.eq.0)mplane=1
-c     write(out,'(a20,4i3)')'i,msign,m,inv',i,msign,m,inv
+c     write(*,'(a20,4i3)')'i,msign,m,inv',i,msign,m,inv
         S1='C'
         if(m.eq.2)then
 Centro
@@ -1905,8 +1869,8 @@ C asse improprio m>2
         call compatta(tot,4,k)
         lbls(i)=tot(1:3)
       enddo
-c     write(out,*)'maxasp maxasi mplane nplane invers   MDEG    NMS'
-c     write(out,'(7i7)')maxasp,maxasi,mplane,nplane,invers,MDEG,NMS
+c     write(*,*)'maxasp maxasi mplane nplane invers   MDEG    NMS'
+c     write(*,'(7i7)')maxasp,maxasi,mplane,nplane,invers,MDEG,NMS
       pt='   '
       if(NMS.eq.48)pt='Oh '
       if(NMS.eq.60)pt='I  '
@@ -1962,12 +1926,8 @@ C Dn, Cnv e Cnh
  5100 do m=1,32
         if(pt.eq.pointgr(m))IPOGROU=m
       enddo
- 5200 write(out,1)pt,CSMT,RMST
-      write(out,2)
-      if(out.eq.9)then
-         write(*,1)pt,CSMT,RMST
-         write(*,2)
-      endif
+ 5200 write(*,1)pt,CSMT,RMST
+      write(*,2)
       RETURN
       END
       subroutine stasy
@@ -1977,8 +1937,6 @@ C        STAMPA LE POSIZIONI EQUIVALENTI
 C
 c     character*120 linea
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       character*80 linea
       character*40 riga
       COMMON/SIMME/SIM(3,3,NMG),DEV(NMG),CSM(NMG),CSMT,NMS,MTG(NMG,NMG)
@@ -1990,7 +1948,7 @@ c     character*120 linea
       I=1
       if(NMS.gt.1)I=2
     2 format(2a40)
-      write(out,2)(' Symmetry element its CSM and Max.Diff. ',k=1,I)
+      write(*,2)(' Symmetry element its CSM and Max.Diff. ',k=1,I)
       DO 320 M=1,NMS
       mm=M
       call intpe(riga(1:39),SIM,TRL,mm,2,*310,*310)
@@ -2003,7 +1961,7 @@ c     character*120 linea
       write(linea(i3:i4),'(2f8.4)')CSM(M),DEV(M)
 c     if(i1.eq.81)then
       if(i1.eq.41)then
-          write(out,'(1x,a)')linea
+          write(*,'(1x,a)')linea
       do 315 kk=1,80
 c     do 315 kk=1,120
       linea(kk:kk)=' '
@@ -2011,7 +1969,7 @@ c     do 315 kk=1,120
           i1=-39
       endif
   320 CONTINUE
-      if(i1.ge.1)write(out,'(1x,a)')linea(1:i1+39)
+      if(i1.ge.1)write(*,'(1x,a)')linea(1:i1+39)
       RETURN
       END
       subroutine trasfm(A,B,I,J)
@@ -2049,8 +2007,6 @@ C  MK(I,NMS) CONTIENE IL NUMERO DELL'ATOMO OTTENUTO STASFORMANDO I CON
 C  L'OPERAZIONE NMS
       PARAMETER (NMA=1000)
       PARAMETER (NMG=120)
-      integer out
-      COMMON/output/out
       COMMON/SIMME/SIM(3,3,NMG),DEV(NMG),CSM(NMG),CSMT,NMS,MTG(NMG,NMG)
       COMMON/AT2/SX(3,NMA),SIG(NMA),DXM(NMA),DCM,DCME,indwgh,indtol
       DIMENSION XO(3,1),MN(1),MK(NMA,1),A(3,3),V(3),W(3),iat(NMA)
@@ -2060,29 +2016,29 @@ Controlla per prima cosa che ls matrice A non sia gia' compresa in SIM
         if(ium(A,SIM,1.d-2,1,i).eq.1)go to 6
       enddo
       NMS=NMS+1
-c     write(out,'(i3,3f10.6,i4)')(i,(XO(k,i),k=1,3),MN(i),i=1,N)
-c     write(out,'(3f10.6)')((A(k,i),i=1,3),k=1,3)
+c     write(*,'(i3,3f10.6,i4)')(i,(XO(k,i),k=1,3),MN(i),i=1,N)
+c     write(*,'(3f10.6)')((A(k,i),i=1,3),k=1,3)
       DO 4 I=1,N
       MK(I,NMS)=0
       JJ=0
       FMIN=DXM(I)
       call prodmv(A,XO,V,1,I,1)
-c     write(out,'(3f10.6)')V
+c     write(*,'(3f10.6)')V
       DO 2 J=1,N
       IF(MN(I).NE.MN(J))GO TO 2
       call combli(XO,V,W,1.d0,-1.d0,J,1,1)
       call prods(W,W,F,1,1,2)
-c     write(out,*)'I,J,NMS,F',I,J,NMS,F
+c     write(*,*)'I,J,NMS,F',I,J,NMS,F
       IF(F.GT.FMIN)GO TO 2
       FMIN=F
       JJ=J
     2 CONTINUE
-c     write(out,*)'JJ, se JJ=0 rifiuta',JJ
+c     write(*,*)'JJ, se JJ=0 rifiuta',JJ
       IF(JJ.EQ.0)GO TO 5
       MK(I,NMS)=JJ
     4 CONTINUE
-c     write(out,*)'MK'
-c     write(out,'(29i3)')(MK(k,NMS),k=1,N)
+c     write(*,*)'MK'
+c     write(*,'(29i3)')(MK(k,NMS),k=1,N)
 C analisi della matrice di moltiplicazione
       do k=1,N
       iat(k)=0
@@ -2101,7 +2057,7 @@ C analisi della matrice di moltiplicazione
       go to 7
     9 continue
       call ax_order(A,1,nord,msign,inv)
-c     write(out,*)'nord,neq,inv',nord,neq,inv
+c     write(*,*)'nord,neq,inv',nord,neq,inv
 C il numero di atomi equivalenti per l'operazione di ordine m puo' essere
 C solo 1 o 2 (atomi giacenti sull'elemento di simmetria) m (caso normale)
 C o 2m ( quando si ha un elemento riducibile 3/m 5/m etc.)
@@ -2110,13 +2066,13 @@ C o 2m ( quando si ha un elemento riducibile 3/m 5/m etc.)
       if(neq.eq.2*nord)go to 10
       go to 5
    10 continue
-c     write(out,*)'accettata, nord=',nord
-c     write(out,'(3f10.5)')((A(i,j),j=1,3),i=1,3)
+c     write(*,*)'accettata, nord=',nord
+c     write(*,'(3f10.5)')((A(i,j),j=1,3),i=1,3)
       call trasfm(A,SIM,1,NMS)
       RETURN
     5 NMS=NMS-1
     6 MV=0
-c     write(out,*)'return da verify,NMS=',NMS
+c     write(*,*)'return da verify,NMS=',NMS
       RETURN
       END
       subroutine work(MO)
@@ -2136,8 +2092,6 @@ C NMS     =  ordine del gruppo di simmetria trovato
       PARAMETER (NMG=120)
       PARAMETER (NMV=NMA*NMG)
       common/rmsmin/RV(3,3),ppo(3,NMV),ppu(3,NMV),npu
-      integer out
-      COMMON/output/out
       CHARACTER*6 NAME,NNAME
       CHARACTER*52 comment
       COMMON/AT4/NAME(NMA)
@@ -2174,9 +2128,8 @@ C NMS     =  ordine del gruppo di simmetria trovato
       N=0 
       NMS=1
 c selezione gruppo atomi da simmetrizzare
-      write(out,1)MO
+      write(*,1)MO
     1 format(//,38H           SYMMETRIZATION OF GROUP NR.,i2,//)
-      if(out.eq.9)write(6,1)MO
       do 450 i=1,NA
       call azzera(AA,0.d0,9)
       AA(1,1)=SX(1,I)
@@ -2194,9 +2147,9 @@ c selezione gruppo atomi da simmetrizzare
        SIG(I)=SIG(I)/den
       else
        if(indtol.eq.3.or.indwgh.eq.3)then
-        write(out,*)' WARNING: there is at least an atom with s.u.=0'
-        write(out,*)
-        write(out,*)'  CHANGE THE WEIGHTING AND TOLERANCE SCHEME!!!'
+        write(*,*)' WARNING: there is at least an atom with s.u.=0'
+        write(*,*)
+        write(*,*)'  CHANGE THE WEIGHTING AND TOLERANCE SCHEME!!!'
         STOP
        endif
       endif
@@ -2212,7 +2165,7 @@ c selezione gruppo atomi da simmetrizzare
       if(indwgh.eq.2) PESO(N)=1.0D0
       if(indwgh.eq.3)then
         if(SIG(i).lt..00001d0)then
-          write(out,*)' ERROR: THE S.U. OF AN ATOM IS ZERO!!!'
+          write(*,*)' ERROR: THE S.U. OF AN ATOM IS ZERO!!!'
           stop
         endif
         PESO(N)=1.d0/(SIG(I)*SIG(I))
@@ -2221,7 +2174,7 @@ c selezione gruppo atomi da simmetrizzare
   450 continue
       porig=PESO(1)
       if(N.le.2)then
-      write(out,*)' GROUP WITH LESS THAN THREE ATOMS'
+      write(*,*)' GROUP WITH LESS THAN THREE ATOMS'
       return
       endif
 C
@@ -2230,7 +2183,7 @@ C     CALCOLO DELLA DISTANZA MEDIA DAL BARICENTRO DEL GRUPPO
 C
   460 call momin(XO,PESO,O,N)
 c     do i=1,3
-c     write(OUT,'(3f10.5,5x,3f10.5)')(OR(i,k),k=1,3),(OT(i,k),k=1,3)
+c     write(*,'(3f10.5,5x,3f10.5)')(OR(i,k),k=1,3),(OT(i,k),k=1,3)
 c     enddo
 C
 C DM=maximum length of vectors XO(I)
@@ -2238,7 +2191,7 @@ C
       DM=0.d0
       DO 480 I=1,N
       call prods(XO,XO,D(I),I,I,2)
-c     write(OUT,'(a9,i3,4f10.5)')'atom,D(I)',I,(XO(k,i),k=1,3),D(i)
+c     write(*,'(a9,i3,4f10.5)')'atom,D(I)',I,(XO(k,i),k=1,3),D(i)
       if(D(i).gt.DM)then
       DM=D(i)
       endif
@@ -2260,8 +2213,8 @@ C
       endif
       NDEGA=MDEG+1
       nd=(MDEG+1)/2+1
-      write(out,*)'PRINCIPAL INERTIA MOMENTS and DEGENERATION DEGREE'
-      write(out,'(3f10.2,i10,/)')RIN,nd
+      write(*,*)'PRINCIPAL INERTIA MOMENTS and DEGENERATION DEGREE'
+      write(*,'(3f10.2,i10,/)')RIN,nd
 C_______________________________________________________________________
 C gruppi lineari
       if(MDEG.eq.1)then
@@ -2317,10 +2270,10 @@ C GENERAZIONE DELLA MATRICE DI SIMMETRIA
       CO(IC,IB)=-CO(IB,IC)
       CO(IU,IU)=COST
       call verify(XO,CO,MK,MN,MV,N)
-c     write(out,*)' 1140 tentativo con la matrice:',NINT(cost),MORD
-c     write(out,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
-c     write(out,*)'  NMS MORD NASS MV'
-c     write(out,'(5i5)')NMS,MORD,NASS,MV
+c     write(*,*)' 1140 tentativo con la matrice:',NINT(cost),MORD
+c     write(*,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'  NMS MORD NASS MV'
+c     write(*,'(5i5)')NMS,MORD,NASS,MV
       IF(MV.EQ.1)GO TO 1150
       IF(COST.EQ.-1.d0)GO TO 1110
       COST=-1.d0
@@ -2334,7 +2287,7 @@ c elemento riducibile quindi e' inutile testarlo
       GO TO 1140
 C HA TROVATO UN ELEMENTO DI SIMMETRIA
  1150 IF(MORD.EQ.3.OR.MORD.EQ.6)IES=1
-c     write(OUT,*)'MDEG,MORD',MDEG,MORD
+c     write(*,*)'MDEG,MORD',MDEG,MORD
       if(MDEG.eq.1.and.MORD.gt.2)go to 1300
 C RICERCA ELEMENTI DI SIMMETRIA SU NUOVI ASSI
  1205 if(MORD.gt.2)go to 1110
@@ -2351,7 +2304,7 @@ C RICICLO SUL SECONDO O TERZO ASSE
 C RICERCA DELLA ROTAZIONE PER PORTARE EVENTUALI ELEMENTI DI SIMMETRIA
 C A COINCIDERE CON GLI ASSI DI RIFERIMENTO
  1300 IF(N.le.1)then
-        write(out,*)'Single atoms, not a molecule'
+        write(*,*)'Single atoms, not a molecule'
         return
       endif
 C SELEZIONE DELL'ATOMO DA USARE PER DETERMINARE LA ROTAZIONE
@@ -2402,10 +2355,10 @@ C dall'asse unico
       endif
  1340 continue
  1350 continue
-c     write(OUT,*)'al 1350 II,JJ',II,JJ
-c     write(OUT,'(a5)')'MD(1)'
-c     write(OUT,'(25i3)'),(MD(i,1),i=1,N)
-c     write(OUT,'(a5,25i3)')'MD(2)',(MD(i,2),i=1,IAI)
+c     write(*,*)'al 1350 II,JJ',II,JJ
+c     write(*,'(a5)')'MD(1)'
+c     write(*,'(25i3)'),(MD(i,1),i=1,N)
+c     write(*,'(a5,25i3)')'MD(2)',(MD(i,2),i=1,IAI)
       call azzera(AA,0.d0,9)
       N1=N-1
       DO 1370 I1=1,N1
@@ -2418,7 +2371,7 @@ c     write(OUT,'(a5,25i3)')'MD(2)',(MD(i,2),i=1,IAI)
       cam=CO(1,2)*CO(1,2)+CO(2,2)*CO(2,2)+CO(3,2)*CO(3,2)
       if(cam.le.0.00001)go to 1360
       call norm(CO,2)
-c     write(OUT,'(4f10.5)')CO(1,2),CO(2,2),CO(3,2)
+c     write(*,'(4f10.5)')CO(1,2),CO(2,2),CO(3,2)
       call prodv(CO,CO,CO,2,3,1)
       call traspo(CO,CO,1,1)
       call r_frame(CO,XO,N)
@@ -2427,32 +2380,32 @@ c     write(OUT,'(4f10.5)')CO(1,2),CO(2,2),CO(3,2)
       AA(2,2)=-1
       AA(3,3)= com
       call verify(XO,AA,MK,MN,MV,N)
-c     write(OUT,*)' 1350 tentativo con la matrice:'
-c     write(OUT,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
-c     write(OUT,*)'NMS,MV',NMS,MV
+c     write(*,*)' 1350 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       AA(1,1)=-1
       AA(2,2)= 1
       AA(3,3)= com
       call verify(XO,AA,MK,MN,MV,N)
-c     write(OUT,*)' 1350 tentativo con la matrice:'
-c     write(OUT,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
-c     write(OUT,*)'NMS,MV',NMS,MV
+c     write(*,*)' 1350 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       AA(1,1)= 1
       AA(2,2)=-1
       AA(3,3)= com
       call verify(XO,AA,MK,MN,MV,N)
-c     write(OUT,*)' 1350 tentativo con la matrice:'
-c     write(OUT,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
-c     write(OUT,*)'NMS,MV',NMS,MV
+c     write(*,*)' 1350 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       AA(1,1)= 0
       AA(1,2)= 1
       AA(2,1)= 1
       AA(2,2)= 0
       AA(3,3)= com
       call verify(XO,AA,MK,MN,MV,N)
-c     write(OUT,*)' 1350 tentativo con la matrice:'
-c     write(OUT,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
-c     write(OUT,*)'NMS,MV',NMS,MV
+c     write(*,*)' 1350 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       if(NMS.ge.3)go to 1110
       if(com.le.0.0)go to 1360
       com=-com
@@ -2490,9 +2443,9 @@ C         ATOMI DELLA STESSA
       MD(IAI,2)=MD(IAI,2)+1
  2040 CONTINUE
  2050 CONTINUE
-c     write(OUT,'(A5)')'MD(1)'
-c     write(OUT,'(20i4)')(MD(kkk,1),kkk=1,N)
-c     write(OUT,'(a5,/,20i4)')'MD(2)',(MD(kkk,2),kkk=1,IAI)
+c     write(*,'(A5)')'MD(1)'
+c     write(*,'(20i4)')(MD(kkk,1),kkk=1,N)
+c     write(*,'(a5,/,20i4)')'MD(2)',(MD(kkk,2),kkk=1,IAI)
 C SE CI SONO ATOMI SU POSIZIONI SPECIALI USA QUESTI PER TROVARE LA
 C MATRICE DI ROTAZIONE
  2100 call azzera(CO,0.d0,9)
@@ -2503,7 +2456,7 @@ C MATRICE DI ROTAZIONE
           II=i
         endif
       enddo
-c     write(OUT,*)'II',II
+c     write(*,*)'II',II
 c perche' ci sia simmetria I o Ih ci devono essere almeno 12 atomi equivalenti
       if(MD(II,2).eq.12.or.MD(II,2).eq.20.or.MD(II,2).eq.30.or.MD(II,2)
      *.gt.48)call icosahed(XO,PESO,N,MN,MK,MD,II,MDEG,*2780)
@@ -2511,7 +2464,7 @@ c perche' ci sia simmetria I o Ih ci devono essere almeno 12 atomi equivalenti
       if(NMS.ge.5)then
         MDEG=1
         call azzera(AA,0.d0,9)
-        write(out,'(i3,3f9.5)')(I,(XO(k,I),k=1,3),i=1,N)
+        write(*,'(i3,3f9.5)')(I,(XO(k,I),k=1,3),i=1,N)
         AA(1,1)= 1
         AA(2,2)= 1
         AA(3,3)=-1
@@ -2567,8 +2520,8 @@ C
       CO(2,3)=XO(2,I1)+XO(2,I2)+XO(2,I3)
       CO(3,3)=XO(3,I1)+XO(3,I2)+XO(3,I3)
       call norm(CO,3)
-c     write(out,'(a15,3i4)')'I1,I2,I3',I1,I2,I3
-c     write(out,'(a5,3f9.5)')'asse',(CO(kkk,3),kkk=1,3)
+c     write(*,'(a15,3i4)')'I1,I2,I3',I1,I2,I3
+c     write(*,'(a5,3f9.5)')'asse',(CO(kkk,3),kkk=1,3)
 C salvataggio del possibile asse 3
       CO(1,6+NMS1)=CO(1,3)
       CO(2,6+NMS1)=CO(2,3)
@@ -2601,20 +2554,20 @@ C rotazione per portare il C3 a coincidere con z
       call verify(XO,AA,MK,MN,MV,N)
       NMS=1
       NMS1=NMS1+MV
-c     write(OUT,*)' 2150 tentativo con la matrice:'
-c     write(OUT,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
-c     write(OUT,*)'NMS1,MV',NMS1,MV
+c     write(*,*)' 2150 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((AA(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS1,MV',NMS1,MV
       call traspo(CO,CO,1,1)
       call r_frame(CO,XO,N)
       if(NMS1.eq.3)GO TO 2350
  2180 CONTINUE
  2190 CONTINUE
  2200 CONTINUE
-      write(out,2)
+      write(*,2)
     2 format('********************** WARNING **********************',//,
      *'       INCREASING THE TOLERANCE COULD BE USEFUL',//,
      *'*****************************************************')
-c     write(OUT,*)'NMS1,MV',NMS1,MV
+c     write(*,*)'NMS1,MV',NMS1,MV
       if(NMS1.eq.1)then
 C se ha gia' modificato una volta i pesi non li modifica ulteriormente
 C ma riduce la tolleranza accettata fra i momenti di inerzia per il
@@ -2628,11 +2581,11 @@ C pseudodegenerazione 3 senza assi C3. Esiste ancora la possibilita'
 C che la pseudodegenerazione sia completa (MDEG=0) o che ci sia una
 C asse 4,-4,5,-5,7,-7,8,-8
 C 
-        write(out,*)'Weights are changed'
-        write(out,*)
+        write(*,*)'Weights are changed'
+        write(*,*)
         do k=1,N
           PESO(K)=PESO(K)*(D(k)/DM)**4
-c         write(out,'(i3,g10.3)')k,PESO(K)
+c         write(*,'(i3,g10.3)')k,PESO(K)
         enddo
         go to 460
       endif
@@ -2670,14 +2623,14 @@ C determinare il riferimento definitivo
       CO(3,3)=CO(2,2)
       CO(2,3)=CO(2,2)
       CO(3,2)=-CO(2,2)
-c     write(out,*)'Nuove coordinate'
-c     write(out,'(i2,3f9.5)')(lll,(XO(kkk,lll),kkk=1,3),lll=1,N)
+c     write(*,*)'Nuove coordinate'
+c     write(*,'(i2,3f9.5)')(lll,(XO(kkk,lll),kkk=1,3),lll=1,N)
       go to 2410
 C ORTONORMALIZZAZIONE DELLA MATRICE DI ROTAZIONE
  2400 call norm(CO,5)
-c     write(out,*)'MD'
-c     write(out,'(30i4)')(MD(i,1),i=1,N)
-c     write(out,'(30i4)')(MD(i,2),i=1,N)
+c     write(*,*)'MD'
+c     write(*,'(30i4)')(MD(i,1),i=1,N)
+c     write(*,'(30i4)')(MD(i,2),i=1,N)
       call prodv(CO,CO,CO,5,6,7)
       call norm(CO,7)
       call prodv(CO,CO,CO,7,5,6)
@@ -2686,20 +2639,20 @@ c     write(out,'(30i4)')(MD(i,2),i=1,N)
       call trasfv(CO,CO,7,3)
       call traspo(CO,CO,1,1)
 C ROTAZIONE SU NUOVA TERNA
-c     write(out,*)' CO prima di r_frame'
-c     write(out,'(3f10.5)')((CO(kk,ii),ii=1,3),kk=1,3)
+c     write(*,*)' CO prima di r_frame'
+c     write(*,'(3f10.5)')((CO(kk,ii),ii=1,3),kk=1,3)
  2410 call r_frame(CO,XO,N)
 C VERIFICA GENERALE ESISTENZA ASSE TERNARIO
-c     write(out,*)' 2410 coordinate'
-c     write(out,'(i2,3f9.5)')(lll,(XO(kkk,lll),kkk=1,3),lll=1,N)
+c     write(*,*)' 2410 coordinate'
+c     write(*,'(i2,3f9.5)')(lll,(XO(kkk,lll),kkk=1,3),lll=1,N)
       call azzera(AA,0.d0,9)
       AA(1,2)=1.d0
       AA(2,3)=1.d0
       AA(3,1)=1.d0
       call verify(XO,AA,MK,MN,MV,N)
-c     write(out,*)' 2400 tentativo con la matrice:'
-c     write(out,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
-c     write(out,*)'NMS,MV',NMS,MV
+c     write(*,*)' 2400 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       NASS=1
 C ha torvato un asse 3 (diagonale) ora cerca un asse 2
       IU=1
@@ -2711,9 +2664,9 @@ C ha torvato un asse 3 (diagonale) ora cerca un asse 2
       CO(2,2)=-1.d0
       CO(3,3)=1.d0
       call verify(XO,CO,MK,MN,MV,N)
-c     write(out,*)' 2400 tentativo con la matrice:'
-c     write(out,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
-c     write(out,*)'NMS,MV',NMS,MV
+c     write(*,*)' 2400 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       if(MV.eq.1)GO TO 1120
 C non esiste l'asse 2 allineato su x: si tratta di una pseudodegenerazione
 C mi metto in modo che l'asse 3 sia allineato a z
@@ -2742,8 +2695,7 @@ C mi metto in modo che l'asse 3 sia allineato a z
       IU=3
       IB=2
       IC=1
-      write(6,5)
-      if(out.eq.9)write(out,5)
+      write(*,5)
     5 format(
      *'***********************************************************',/,
      *'WARNING: the degeneration degree is 3 but no cubic',/,
@@ -2761,11 +2713,11 @@ C RICERCA DEL CENTRO DI SIMMETRIA
       CO(2,2)=-1.d0
       CO(3,3)=-1.d0
       call verify(XO,CO,MK,MN,MV,N)
-c     write(out,*)' 2500 tentativo con la matrice:'
-c     write(out,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
-c     write(out,*)'NMS,MV',NMS,MV
+c     write(*,*)' 2500 tentativo con la matrice:'
+c     write(*,'(3f9.5)')((CO(kkk,lll),lll=1,3),kkk=1,3)
+c     write(*,*)'NMS,MV',NMS,MV
       IF(NMS.NE.1)GO TO 2520
-      write(out,3)
+      write(*,3)
       RETURN 
 complete the group
  2520 call compl_gr(MK,N,*4100)
@@ -2832,25 +2784,25 @@ C Ottimizzazione del riferimento per MDEG>0
       npu=npb
       call rms_min(V)
       arms=crms(V)
-c     write(6,*)'v,RV'
-c     write(6,'(3f10.5)')V,RV
+c     write(*,*)'v,RV'
+c     write(*,'(3f10.5)')V,RV
       call r_frame(RV,XO,N)
 Calcolo simmetria per sottogruppi di operazioni
  2790 CSM(1)=0.d0
       DEV(1)=0.d0
 C++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
-c     write(out,*)'GROUP MULTIPLICATION TABLE'
-c     write(out,*)
+c     write(*,*)'GROUP MULTIPLICATION TABLE'
+c     write(*,*)
 c     nst=NMS
 c     nis=25
 c     if(NMS.gt.24)nst=24
 c     do i=1,NMS
-c      write(out,'(24i3)')(MTG(i,j),j=1,nst)
+c      write(*,'(24i3)')(MTG(i,j),j=1,nst)
 c     enddo
-c     write(out,*)
+c     write(*,*)
 c     if(nst.ne.NMS)then
 c      do i=1,NMS
-c       write(out,'(24i3)')(MTG(i,j),j=nis,NMS)
+c       write(*,'(24i3)')(MTG(i,j),j=nis,NMS)
 c      enddo
 c     endif
 C++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ 
@@ -2874,21 +2826,21 @@ CALCOLA LE COORDINATEE SIMMETRIZZATE PER L'INTERO GRUPPO
       ISU(i)=i
       enddo
       call s_coor(SIM,XO,XS,CO,D,DEL,DELM,CSMT,MK,IDM,ISU,NMS,N)
-c     write(out,*)
-c     write(out,*)'FRACTIONAL COORDINATES OF THE CENTRE OF MASS'
-c     write(out,'(3f12.6,/)')BARC
-c     write(out,*)'ORTHOGONAL COORDINATES OF THE CENTRE OF MASS'
-c     write(out,'(3f12.6,/)')BARO
-c     write(out,*)'PRINCIPAL INERTIA MOMENTS'
-c     write(out,'(3f10.2,/)')RIN
-      write(out,*)
-      write(out,*)'   ORTHOGONALIZATION MATRIX'
-      write(out,'(3f12.6)')((OT(k,i),i=1,3),k=1,3)
-      write(out,*)
-      write(out,*)'ATOM      ORTHOGONAL COORDINATES      VECTORS TO MAKE
+c     write(*,*)
+c     write(*,*)'FRACTIONAL COORDINATES OF THE CENTRE OF MASS'
+c     write(*,'(3f12.6,/)')BARC
+c     write(*,*)'ORTHOGONAL COORDINATES OF THE CENTRE OF MASS'
+c     write(*,'(3f12.6,/)')BARO
+c     write(*,*)'PRINCIPAL INERTIA MOMENTS'
+c     write(*,'(3f10.2,/)')RIN
+      write(*,*)
+      write(*,*)'   ORTHOGONALIZATION MATRIX'
+      write(*,'(3f12.6)')((OT(k,i),i=1,3),k=1,3)
+      write(*,*)
+      write(*,*)'ATOM      ORTHOGONAL COORDINATES      VECTORS TO MAKE
      * SYMMETRICAL THE GROUP'
 c     do I=1,N
-c     write(out,'(24I4)')(MK(I,K),K=1,NMS)
+c     write(*,'(24I4)')(MK(I,K),K=1,NMS)
 c     enddo
 C Recupero degli atomi con MOL<0
       N1=N
@@ -2928,7 +2880,7 @@ C Recupero degli atomi con MOL<0
  3200 continue
  3300 continue
 c     do I=1,N1
-c     write(out,'(24I4)')(MK(I,K),K=1,NMS)
+c     write(*,'(24I4)')(MK(I,K),K=1,NMS)
 c     enddo
       do 3350 i=NSTART,N1
       if(MK(I,1).eq.0)go to 3350
@@ -2944,15 +2896,15 @@ c     enddo
           XS(k,I)=XS(k,I)/dfloat(NMS)
         enddo
  3360 continue
- 3400 write(out,*)
+ 3400 write(*,*)
       call asymunit(MK,IASU,N1,NMS)
       do i=1,N1
         call combli(XS,XO,delta,1.d0,-1.d0,i,i,i)
-        write(out,'(a6,2x,2(3f10.5,5x))')NAME(IEQAT(I)),
+        write(*,'(a6,2x,2(3f10.5,5x))')NAME(IEQAT(I)),
      *  (XO(k,I),k=1,3),(delta(k,i),k=1,3)
       enddo
-      write(out,*)
-      write(out,'(5x,a34,12x,a)')'SYMMETRIZED ORTHOGONAL COORDINATES',
+      write(*,*)
+      write(*,'(5x,a34,12x,a)')'SYMMETRIZED ORTHOGONAL COORDINATES',
      *'ATOMIC R.M.S.'
       ind1=0
       ind2=0
@@ -2967,28 +2919,28 @@ c     enddo
  3430 comment='$'
       ind2=2
  3440 if(MK(i,1).gt.0)then
-        write(out,'(a6,i2,2(3f9.5,2x),a1)')NAME(IEQAT(I)),
+        write(*,'(a6,i2,2(3f9.5,2x),a1)')NAME(IEQAT(I)),
      *  MOL(IEQAT(I)),(XS(k,I),k=1,3),(RMS(k,I),k=1,3),car
       else
-        write(out,'(a6,i2,3f9.5,29x,a1,1x,a1)')NAME(IEQAT(I)),
+        write(*,'(a6,i2,3f9.5,29x,a1,1x,a1)')NAME(IEQAT(I)),
      *  MOL(IEQAT(I)),(XS(k,I),k=1,3),comment,car
       endif
 C IASU(I)=2 se l'atomo rappresenta l'unita' asimmetrica altrimenti IASU(I)=1
       enddo
       ind1=ind1+ind2
-      write(out,*)
-      write(out,*)'* Atom defining the asymmetric unit for the found sym
+      write(*,*)
+      write(*,*)'* Atom defining the asymmetric unit for the found sym
      *metry group.'
       if(ind1.eq.0)go to 3460
       if(ind1.eq.2)go to 3450
-      write(out,*)
-      write(out,*)'# This atom was symmetrized but NOT used to find the
+      write(*,*)
+      write(*,*)'# This atom was symmetrized but NOT used to find the
      *symmetry group and to calculate CMS, RMS and so on.'
  3450 if(ind1.eq.1)go to 3460
-       write(out,*)
-       write(out,*)'$ It was IMPOSSIBLE to symmetrize this atom accordin
+       write(*,*)
+       write(*,*)'$ It was IMPOSSIBLE to symmetrize this atom accordin
      *g to the found symmetry group and within the given tolerance.'
- 3460 write(out,*)
+ 3460 write(*,*)
       do i=1,4
         DEL(i)=DEL(I)/dfloat(N)
         id1=idm(i)
@@ -2999,18 +2951,11 @@ C IASU(I)=2 se l'atomo rappresenta l'unita' asimmetrica altrimenti IASU(I)=1
           NNAME(i)=' --- '
         endif
       enddo
-      write(out,*)
-      write(out,'(1x,a29,4F10.5,/)')'AVERAGE DIFFERENCE ON X,Y,Z,D',DEL
-      write(out,'(1x,a29,4F10.5)')'MAXIMUM DIFFERENCE ON X,Y,Z,D',DELM
-      write(out,'(1x,a29,4a10,/)')'DUE TO THE ATOMS',
+      write(*,*)
+      write(*,'(1x,a29,4F10.5,/)')'AVERAGE DIFFERENCE ON X,Y,Z,D',DEL
+      write(*,'(1x,a29,4F10.5)')'MAXIMUM DIFFERENCE ON X,Y,Z,D',DELM
+      write(*,'(1x,a29,4a10,/)')'DUE TO THE ATOMS',
      *(NNAME(i),i=1,4)
-      if(out.eq.9)then
-       write(*,*)
-       write(*,'(1x,a29,4F10.5,/)')'AVERAGE DIFFERENCE ON X,Y,Z,D',DEL
-       write(*,'(1x,a29,4F10.5)')'MAXIMUM DIFFERENCE ON X,Y,Z,D',DELM
-       write(*,'(1x,a29,4a10,/)')'DUE TO THE ATOMS',
-     * (NNAME(i),i=1,4)
-      endif
 C
       do i=1,N 
       do j=1,NMS
@@ -3019,16 +2964,16 @@ C
       do l=1,3
       diff=abs(XS(l,k)-V(l))
       if(diff.gt.0.001d0)then
-       write(out,*)
-       write(out,*)
+       write(*,*)
+       write(*,*)
      * '                    ========> CAUTION!!! <=======' 
-       write(out,*)
-       write(out,*)  ' THE SYMMETRY OPERATIONS ARE NOT CONSISTENT WITH THE
+       write(*,*)
+       write(*,*)  ' THE SYMMETRY OPERATIONS ARE NOT CONSISTENT WITH THE
      * EQUIVALENTS POINTS.'
-       write(out,'(a27,f10.5)')' DIFFERENCE FOUND =',diff
-       write(out,*)
+       write(*,'(a27,f10.5)')' DIFFERENCE FOUND =',diff
+       write(*,*)
      * '     ========> TRY TO REDUCE THE CONSTANT OF TOLERANCE <=======' 
-c      write(out,'(3(3f11.7,2x))')(XS(kk,i),kk=1,3),V,(XS(kk,k),kk=1,3)
+c      write(*,'(3(3f11.7,2x))')(XS(kk,i),kk=1,3),V,(XS(kk,k),kk=1,3)
        go to 3500
 c      RETURN
       endif
@@ -3036,16 +2981,16 @@ c      RETURN
       enddo
       enddo
 C 
- 3500 write(out,*)'Bond lengths and bond angles after symmetrization'
+ 3500 write(*,*)'Bond lengths and bond angles after symmetrization'
       call bond(XS,IASU,N1)
       call out_bond(XS,IEQAT,IASU,N)
       if(PC(7).gt.2.d0)then
-      write(out,'(7x,a)')' SYMMETRIZED FRACTIONAL COORDINATES'
+      write(*,'(7x,a)')' SYMMETRIZED FRACTIONAL COORDINATES'
       do 3600 i=1,N1
       k=IEQAT(i)
       call prodmv(OTI,XS,X,1,i,k)
       call combli(X,BARC,X,1.d0,1.d0,k,1,k)
-      write(out,'(1x,a6,i2,6f9.5)')NAME(k),MOL(k),(X(j,k),j=1,3),
+      write(*,'(1x,a6,i2,6f9.5)')NAME(k),MOL(k),(X(j,k),j=1,3),
      *(SX(j,k),j=1,3)
  3600 continue
       endif
@@ -3053,12 +2998,12 @@ C
       if(IPOGROU.ne.0.and.(IPOGROU.lt.16.or.IPOGROU.gt.27))then
       call stasy
       else
-      write(out,6)
+      write(*,6)
       do 3800 k=1,NMS
-      write(out,8)k,CSM(k),DEV(k),lbls(K)
+      write(*,8)k,CSM(k),DEV(k),lbls(K)
     8 format(/,i3,' CSM =',f7.2,5x,'MAX. DIFF. (Angstrom)=',F6.4,
      *5x,'TYPE ',a3)
-      write(out,7)((SIM(I,J,K),J=1,3),I=1,3)
+      write(*,7)((SIM(I,J,K),J=1,3),I=1,3)
  3800 continue
       endif
       IF(IES.NE.1)RETURN
@@ -3068,18 +3013,18 @@ C
       AL(1,1)=1.d0
       AL(3,3)=1.d0
       call inv33(AL,ALX,1,1)
-      write(out,*)' SYMMETRY OPERATIONS IN HEXAGONAL COORDINATES'
+      write(*,*)' SYMMETRY OPERATIONS IN HEXAGONAL COORDINATES'
       DO 3900 I=1,NMS
       call prodmm(ALX,SIM,AA,1,I,1)
       call prodmm(AA,AL,SIM,1,1,I)
  3900 continue
       call stasy
-      write(out,*)
-      write(out,11)
+      write(*,*)
+      write(*,11)
    11 format(' OBLIQUE COORDINATES (HEXAGONAL SYSTEM)')
       do 4000 I=1,N1
       call prodmv(ALX,XS,CO,1,I,I)
-      write(out,'(1x,a8,3f10.5)')NAME(IEQAT(I)),(CO(J,I),J=1,3)
+      write(*,'(1x,a8,3f10.5)')NAME(IEQAT(I)),(CO(J,I),J=1,3)
  4000 continue
  4100 RETURN 
     3 format(' NO SYMMETRY EXISTS WITHIN GIVEN TOLERANCE')
